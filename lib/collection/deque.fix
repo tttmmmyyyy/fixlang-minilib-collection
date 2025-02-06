@@ -81,9 +81,9 @@ namespace Deque {
     );
 
     // Returns an iterator of elements.
-    to_iter: Deque a -> Iterator a;
+    to_iter: Deque a -> DynIterator a;
     to_iter = |q| (
-        q.@front.to_iter.reverse.append(q.@back.to_iter)
+        q.@front.to_iter.reverse.append(q.@back.to_iter).to_dyn
     );
 
     // Reverses an array.
