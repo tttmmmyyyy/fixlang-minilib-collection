@@ -195,8 +195,8 @@ namespace RBNode {
                 right.find_range(lt_begin, lt_end)
             } else if elem.lt_end {    // begin <= elem && elem < end
                 left.find_range(lt_begin, lt_end)
-                ._fast_append(right.find_range(lt_begin, lt_end)
-                        .push_front(elem).to_dyn)
+                .append(right.find_range(lt_begin, lt_end)
+                        .push_front(elem)).to_dyn
             } else {                    // end <= elem
                 left.find_range(lt_begin, lt_end)
             }
@@ -217,8 +217,8 @@ namespace RBNode {
                 right.find_range_descending(lt_begin, lt_end)
             } else if elem.lt_end {    // begin <= elem && elem < end
                 right.find_range_descending(lt_begin, lt_end)
-                ._fast_append(left.find_range_descending(lt_begin, lt_end)
-                        .push_front(elem).to_dyn)
+                .append(left.find_range_descending(lt_begin, lt_end)
+                        .push_front(elem)).to_dyn
             } else {                    // end <= elem
                 left.find_range_descending(lt_begin, lt_end)
             }
@@ -226,17 +226,18 @@ namespace RBNode {
         DynIterator { next: next }
     );
 
-    // Same as `Iterator::append` but a little fast.
-    _fast_append : DynIterator a -> DynIterator a -> DynIterator a;
-    _fast_append = |rhs, lhs| (
-        let next = |_| (
-            let opt = lhs.advance;
-            if opt.is_none { rhs.advance };
-            let (lhs, e) = opt.as_some;
-            some $ (lhs._fast_append(rhs), e)
-        );
-        DynIterator { next : next }
-    );
+    // Now Std's `append` is considered to be faster, so the below is commented out.
+    // // Same as `Iterator::append` but a little fast.
+    // _fast_append : DynIterator a -> DynIterator a -> DynIterator a;
+    // _fast_append = |rhs, lhs| (
+    //     let next = |_| (
+    //         let opt = lhs.advance;
+    //         if opt.is_none { rhs.advance };
+    //         let (lhs, e) = opt.as_some;
+    //         some $ (lhs._fast_append(rhs), e)
+    //     );
+    //     DynIterator { next : next }
+    // );
 
     // Gets the first element (that is, the smallest element) of the tree.
     get_first: RBNode a -> Option a;
@@ -698,7 +699,7 @@ namespace RBNode {
     to_iter = |node| (
         if node.is_empty { DynIterator::empty };
         let (left, elem, right) = node.get_triplet;
-        left.to_iter._fast_append(right.to_iter.push_front(elem).to_dyn)
+        left.to_iter.append(right.to_iter.push_front(elem)).to_dyn
     );
 
     from_iter_lt: [a: RBNodeElem, it: Iterator, Item it = a] (a -> a -> Bool) -> it -> RBNode a;
