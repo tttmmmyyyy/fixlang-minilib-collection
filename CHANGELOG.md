@@ -1,3 +1,8 @@
+## 0.9.2
+### Changed
+- Renamed the values whose names start with `_` and a capital letter to start with `__` (`_Debug` -> `__Debug`). Fix is to read such a name as the name of a type, a trait, a namespace or a module (tttmmmyyyy/fixlang#812).
+- Upgraded to random@1.1.3 for the tests.
+
 ## 0.9.1
 ### Changed
 - Added indirect dependencies.
